@@ -3,87 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECURE / TECH - Glocken, Kameras, Sirenen</title>
+    <title>MILCHSTRASSE // DATEN-TERMINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glow:hover { box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5); }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@100;400&display=swap');
+        
+        body { 
+            background: radial-gradient(circle at center, #0a0f1a 0%, #000000 100%);
+            color: #e2e8f0;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Scanning Animation */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 150, 255, 0.2);
+            position: fixed;
+            top: 0;
+            z-index: 50;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 191, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .data-point {
+            border-left: 2px solid #3b82f6;
+            padding-left: 10px;
+        }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased">
+    <div class="scanline"></div>
 
-    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto">
-        <div class="text-2xl font-black tracking-tighter uppercase italic">Secure<span class="text-blue-500 underline">Tech</span></div>
-        <div class="hidden md:flex space-x-8 text-sm font-medium tracking-widest text-gray-400">
-            <a href="#" class="hover:text-white transition">SYSTEME</a>
-            <a href="#" class="hover:text-white transition">HARDWARE</a>
-            <a href="#" class="hover:text-white transition">KONTAKT</a>
+    <div class="fixed inset-0 pointer-events-none opacity-40">
+        <div id="stars"></div>
+    </div>
+
+    <nav class="relative z-10 p-6 flex justify-between border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 border border-blue-500 rounded-full flex items-center justify-center animate-spin-slow">
+                <i data-lucide="orbit" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <span class="font-bold tracking-[0.4em] uppercase text-sm">Milky Way // Atlas</span>
         </div>
+        <div class="mono text-[10px] text-blue-400">LAT: 23.44° // LONG: 122.01°</div>
     </nav>
 
-    <header class="py-20 px-6 max-w-7xl mx-auto text-center">
-        <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tighter uppercase leading-none">
-            Die Zukunft der <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">Sicherheit.</span>
-        </h1>
-        <p class="text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-light">
-            Glocken, Kameras und Sirenen. Reduziert auf das Maximum. Hochmodernes Interface für professionelle Ansprüche.
-        </p>
-    </header>
-
-    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <main class="relative z-10 max-w-7xl mx-auto p-6 pt-12">
         
-        <div class="glass p-8 rounded-[2rem] md:col-span-2 glow transition-all group">
-            <div class="flex justify-between items-center mb-12">
-                <i data-lucide="camera" class="w-10 h-10 text-blue-500"></i>
-                <span class="bg-red-500/10 text-red-500 text-[10px] font-bold px-3 py-1 rounded-full animate-pulse">LIVE ANALYTICS</span>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            
+            <div class="lg:col-span-2 glass-panel rounded-3xl p-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 mono text-[10px] opacity-30">TYPE: SBbc (Barred Spiral)</div>
+                <h1 class="text-7xl font-bold mb-6 tracking-tighter italic">UNSERE <br> GALAXIE</h1>
+                <p class="text-xl text-blue-200/60 max-w-xl leading-relaxed">
+                    Ein gigantisches System aus über 100 bis 400 Milliarden Sternen. Durchmesser: ca. 100.000 Lichtjahre. Wir befinden uns im Orion-Arm, etwa 27.000 Lichtjahre vom Zentrum entfernt.
+                </p>
+                
+                <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="data-point">
+                        <div class="mono text-[10px] text-blue-400 uppercase">Alter</div>
+                        <div class="text-xl font-bold">13.6 Mrd. J</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="mono text-[10px] text-blue-400 uppercase">Masse</div>
+                        <div class="text-xl font-bold">1.5 Trillionen M☉</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="mono text-[10px] text-blue-400 uppercase">Sterne</div>
+                        <div class="text-xl font-bold">~200 Mrd.</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="mono text-[10px] text-blue-400 uppercase">Status</div>
+                        <div class="text-xl font-bold text-green-400">Stabil</div>
+                    </div>
+                </div>
             </div>
-            <h2 class="text-4xl font-bold mb-4">Überwachung</h2>
-            <p class="text-gray-400 mb-8">AI-gestützte Kamerasysteme mit 4K-Auflösung und thermaler Erkennung.</p>
-            <div class="aspect-video w-full bg-black/50 rounded-2xl border border-white/5 overflow-hidden relative">
-                <div class="absolute inset-0 flex items-center justify-center text-white/20 font-mono text-xs italic tracking-widest">
-                    [ STREAM_ACTIVE // 001 ]
+
+            <div class="glass-panel rounded-3xl p-8 border-red-900/20 bg-red-950/5">
+                <i data-lucide="aperture" class="w-8 h-8 text-red-500 mb-6 animate-pulse"></i>
+                <h3 class="text-2xl font-bold mb-2 uppercase">Sagittarius A*</h3>
+                <p class="text-sm text-gray-400 mono leading-snug mb-6">
+                    Das supermassive schwarze Loch im Zentrum unserer Galaxie. Masse: ca. 4,1 Millionen Sonnenmassen.
+                </p>
+                <div class="p-4 bg-black/40 rounded-xl border border-red-500/20">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[9px] mono">Event Horizon Scan</span>
+                        <span class="text-[9px] mono text-red-500">98%</span>
+                    </div>
+                    <div class="w-full h-1 bg-gray-800 rounded-full">
+                        <div class="bg-red-500 h-full w-[98%]"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="glass p-8 rounded-[2rem] glow transition-all">
-            <i data-lucide="bell" class="w-10 h-10 text-yellow-500 mb-12"></i>
-            <h2 class="text-3xl font-bold mb-4">Signaltechnik</h2>
-            <p class="text-gray-400 mb-6">Präzise Industrieglocken für akustische Signale in jeder Umgebung.</p>
-            <button class="w-full py-4 bg-white text-black font-black rounded-xl hover:scale-[1.02] transition">DETAILS</button>
-        </div>
-
-        <div class="glass p-8 rounded-[2rem] glow transition-all">
-            <i data-lucide="megaphone" class="w-10 h-10 text-red-500 mb-12"></i>
-            <h2 class="text-3xl font-bold mb-4">Sirenen</h2>
-            <p class="text-gray-400 mb-6">120dB Hochleistungssirenen für Alarmierungen im Ernstfall.</p>
-            <div class="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div class="bg-red-600 h-full w-2/3"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
+                <i data-lucide="layers" class="mb-4 text-blue-400 group-hover:scale-110 transition"></i>
+                <h4 class="font-bold mb-2 uppercase tracking-widest">Die Spiralarme</h4>
+                <p class="text-sm text-gray-400">Perseus, Sagittarius, Centaurus und Cygnus bilden die Hauptstruktur.</p>
             </div>
-        </div>
-
-        <div class="glass p-8 rounded-[2rem] md:col-span-2 flex items-center justify-between glow transition-all">
-            <div>
-                <h3 class="text-xl font-bold">Systemstatus: Optimal</h3>
-                <p class="text-gray-500 text-sm italic">Alle Komponenten sind online und einsatzbereit.</p>
+            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
+                <i data-lucide="zap" class="mb-4 text-yellow-400 group-hover:scale-110 transition"></i>
+                <h4 class="font-bold mb-2 uppercase tracking-widest">Dunkle Materie</h4>
+                <p class="text-sm text-gray-400">90% der Masse der Galaxie besteht aus unsichtbarer dunkler Materie.</p>
             </div>
-            <div class="flex -space-x-3">
-                <div class="w-12 h-12 rounded-full border-4 border-black bg-gray-800 flex items-center justify-center"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
-                <div class="w-12 h-12 rounded-full border-4 border-black bg-gray-800 flex items-center justify-center"><i data-lucide="cpu" class="w-5 h-5"></i></div>
+            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
+                <i data-lucide="move-up-right" class="mb-4 text-purple-400 group-hover:scale-110 transition"></i>
+                <h4 class="font-bold mb-2 uppercase tracking-widest">Kollisionskurs</h4>
+                <p class="text-sm text-gray-400">In 4,5 Mrd. Jahren kollidiert die Milchstraße mit der Andromeda-Galaxie.</p>
             </div>
         </div>
 
     </main>
 
-    <footer class="py-20 text-center text-gray-600 text-[10px] tracking-[0.3em] uppercase">
-        &copy; 2024 SecureTech Systems // No Limits
+    <footer class="p-12 text-center">
+        <div class="text-[10px] mono text-blue-900 uppercase tracking-[0.5em]">System-Ende // Daten-Quelle: ESA/NASA</div>
     </footer>
 
     <script>
-      lucide.createIcons();
+        lucide.createIcons();
+        // Hier könnte man später noch Three.js für echte 3D-Sterne hinzufügen
     </script>
 </body>
 </html>
