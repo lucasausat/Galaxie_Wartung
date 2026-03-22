@@ -1,145 +1,269 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MILCHSTRASSE // DATEN-TERMINAL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@100;400&display=swap');
-        
-        body { 
-            background: radial-gradient(circle at center, #0a0f1a 0%, #000000 100%);
-            color: #e2e8f0;
-            font-family: 'Space Grotesk', sans-serif;
-            overflow-x: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MILCHSTRASSE // DATEN-TERMINAL</title>
 
-        .mono { font-family: 'JetBrains Mono', monospace; }
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        /* Scanning Animation */
-        .scanline {
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 150, 255, 0.2);
-            position: fixed;
-            top: 0;
-            z-index: 50;
-            animation: scan 4s linear infinite;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@100;400&display=swap');
 
-        @keyframes scan {
-            0% { top: -10%; }
-            100% { top: 110%; }
-        }
+body {
+    margin: 0;
+    background: black;
+    color: #e2e8f0;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+}
 
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 191, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
 
-        .data-point {
-            border-left: 2px solid #3b82f6;
-            padding-left: 10px;
-        }
-    </style>
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.glass-panel {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,191,255,0.1);
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
+}
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Boot Screen */
+#boot {
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+}
+</style>
 </head>
-<body class="antialiased">
-    <div class="scanline"></div>
 
-    <div class="fixed inset-0 pointer-events-none opacity-40">
-        <div id="stars"></div>
+<body>
+
+<!-- Boot Screen -->
+<div id="boot">
+    <div id="bootText"></div>
+</div>
+
+<canvas id="stars"></canvas>
+
+<nav class="relative z-10 p-6 flex justify-between border-b border-white/10">
+    <div class="flex items-center gap-4">
+        <i data-lucide="orbit" class="text-blue-400"></i>
+        <span class="font-bold tracking-widest">Milky Way // Atlas</span>
     </div>
 
-    <nav class="relative z-10 p-6 flex justify-between border-b border-white/5">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 border border-blue-500 rounded-full flex items-center justify-center animate-spin-slow">
-                <i data-lucide="orbit" class="w-6 h-6 text-blue-400"></i>
-            </div>
-            <span class="font-bold tracking-[0.4em] uppercase text-sm">Milky Way // Atlas</span>
+    <div class="flex gap-4">
+        <button onclick="toggleSound()" class="mono text-xs">🔊 SOUND</button>
+        <button onclick="fakeScan()" class="mono text-xs">SCAN</button>
+    </div>
+</nav>
+
+<main class="relative z-10 max-w-6xl mx-auto p-6">
+
+<div class="glass-panel p-10 rounded-2xl mb-10 fade-in">
+    <h1 id="title" class="text-5xl font-bold mb-4"></h1>
+    <p id="desc" class="text-blue-300"></p>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+        <div>
+            <div class="mono text-xs">ALTER</div>
+            <div id="age" class="text-xl font-bold"></div>
         </div>
-        <div class="mono text-[10px] text-blue-400">LAT: 23.44° // LONG: 122.01°</div>
-    </nav>
-
-    <main class="relative z-10 max-w-7xl mx-auto p-6 pt-12">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            
-            <div class="lg:col-span-2 glass-panel rounded-3xl p-10 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 mono text-[10px] opacity-30">TYPE: SBbc (Barred Spiral)</div>
-                <h1 class="text-7xl font-bold mb-6 tracking-tighter italic">UNSERE <br> GALAXIE</h1>
-                <p class="text-xl text-blue-200/60 max-w-xl leading-relaxed">
-                    Ein gigantisches System aus über 100 bis 400 Milliarden Sternen. Durchmesser: ca. 100.000 Lichtjahre. Wir befinden uns im Orion-Arm, etwa 27.000 Lichtjahre vom Zentrum entfernt.
-                </p>
-                
-                <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="data-point">
-                        <div class="mono text-[10px] text-blue-400 uppercase">Alter</div>
-                        <div class="text-xl font-bold">13.6 Mrd. J</div>
-                    </div>
-                    <div class="data-point">
-                        <div class="mono text-[10px] text-blue-400 uppercase">Masse</div>
-                        <div class="text-xl font-bold">1.5 Trillionen M☉</div>
-                    </div>
-                    <div class="data-point">
-                        <div class="mono text-[10px] text-blue-400 uppercase">Sterne</div>
-                        <div class="text-xl font-bold">~200 Mrd.</div>
-                    </div>
-                    <div class="data-point">
-                        <div class="mono text-[10px] text-blue-400 uppercase">Status</div>
-                        <div class="text-xl font-bold text-green-400">Stabil</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-panel rounded-3xl p-8 border-red-900/20 bg-red-950/5">
-                <i data-lucide="aperture" class="w-8 h-8 text-red-500 mb-6 animate-pulse"></i>
-                <h3 class="text-2xl font-bold mb-2 uppercase">Sagittarius A*</h3>
-                <p class="text-sm text-gray-400 mono leading-snug mb-6">
-                    Das supermassive schwarze Loch im Zentrum unserer Galaxie. Masse: ca. 4,1 Millionen Sonnenmassen.
-                </p>
-                <div class="p-4 bg-black/40 rounded-xl border border-red-500/20">
-                    <div class="flex justify-between mb-1">
-                        <span class="text-[9px] mono">Event Horizon Scan</span>
-                        <span class="text-[9px] mono text-red-500">98%</span>
-                    </div>
-                    <div class="w-full h-1 bg-gray-800 rounded-full">
-                        <div class="bg-red-500 h-full w-[98%]"></div>
-                    </div>
-                </div>
-            </div>
+        <div>
+            <div class="mono text-xs">STERNE</div>
+            <div id="starsCount" class="text-xl font-bold"></div>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
-                <i data-lucide="layers" class="mb-4 text-blue-400 group-hover:scale-110 transition"></i>
-                <h4 class="font-bold mb-2 uppercase tracking-widest">Die Spiralarme</h4>
-                <p class="text-sm text-gray-400">Perseus, Sagittarius, Centaurus und Cygnus bilden die Hauptstruktur.</p>
-            </div>
-            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
-                <i data-lucide="zap" class="mb-4 text-yellow-400 group-hover:scale-110 transition"></i>
-                <h4 class="font-bold mb-2 uppercase tracking-widest">Dunkle Materie</h4>
-                <p class="text-sm text-gray-400">90% der Masse der Galaxie besteht aus unsichtbarer dunkler Materie.</p>
-            </div>
-            <div class="glass-panel p-6 rounded-2xl hover:bg-blue-500/5 transition group">
-                <i data-lucide="move-up-right" class="mb-4 text-purple-400 group-hover:scale-110 transition"></i>
-                <h4 class="font-bold mb-2 uppercase tracking-widest">Kollisionskurs</h4>
-                <p class="text-sm text-gray-400">In 4,5 Mrd. Jahren kollidiert die Milchstraße mit der Andromeda-Galaxie.</p>
-            </div>
+        <div>
+            <div class="mono text-xs">MASSE</div>
+            <div id="mass" class="text-xl font-bold"></div>
         </div>
+        <div>
+            <div class="mono text-xs">STATUS</div>
+            <div id="status" class="text-green-400 font-bold"></div>
+        </div>
+    </div>
+</div>
 
-    </main>
+</main>
 
-    <footer class="p-12 text-center">
-        <div class="text-[10px] mono text-blue-900 uppercase tracking-[0.5em]">System-Ende // Daten-Quelle: ESA/NASA</div>
-    </footer>
+<audio id="bgSound" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7c3d.mp3">
+</audio>
 
-    <script>
-        lucide.createIcons();
-        // Hier könnte man später noch Three.js für echte 3D-Sterne hinzufügen
-    </script>
+<script>
+lucide.createIcons();
+
+/* =======================
+   STARFIELD
+======================= */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for (let i = 0; i < 300; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * canvas.width
+    });
+}
+
+function drawStars() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+
+    stars.forEach(s => {
+        s.z -= 1;
+        if (s.z <= 0) s.z = canvas.width;
+
+        let x = (s.x - canvas.width/2) * (canvas.width/s.z) + canvas.width/2;
+        let y = (s.y - canvas.height/2) * (canvas.height/s.z) + canvas.height/2;
+
+        ctx.fillRect(x, y, 1.5, 1.5);
+    });
+
+    requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* =======================
+   TYPING EFFECT
+======================= */
+function typeText(el, text, speed=30) {
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            el.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    typing();
+}
+
+typeText(document.getElementById("title"), "UNSERE GALAXIE");
+typeText(document.getElementById("desc"),
+"Ein gigantisches System aus Milliarden Sternen im Universum...", 20);
+
+/* =======================
+   LIVE DATA
+======================= */
+let starsVal = 200;
+
+setInterval(() => {
+    starsVal += Math.random();
+    document.getElementById("starsCount").innerText =
+        starsVal.toFixed(2) + " Mrd.";
+
+    document.getElementById("age").innerText =
+        (13.6 + Math.random()*0.01).toFixed(2) + " Mrd. J";
+
+    document.getElementById("mass").innerText =
+        (1.5 + Math.random()*0.01).toFixed(2) + " T";
+
+}, 2000);
+
+document.getElementById("status").innerText = "STABIL";
+
+/* =======================
+   SOUND
+======================= */
+let soundOn = false;
+function toggleSound() {
+    const audio = document.getElementById("bgSound");
+    soundOn = !soundOn;
+    soundOn ? audio.play() : audio.pause();
+}
+
+/* =======================
+   FAKE SCAN
+======================= */
+function fakeScan() {
+    document.getElementById("status").innerText = "SCANNING...";
+    setTimeout(()=>{
+        document.getElementById("status").innerText = "STABIL";
+    },2000);
+}
+
+/* =======================
+   BOOT SCREEN
+======================= */
+const bootText = document.getElementById("bootText");
+const bootLines = [
+"INITIALIZING SYSTEM...",
+"LOADING GALAXY DATA...",
+"CONNECTING TO NASA CORE...",
+"ACCESS GRANTED"
+];
+
+let i = 0;
+
+function boot() {
+    if (i < bootLines.length) {
+        bootText.innerHTML += bootLines[i] + "<br>";
+        i++;
+        setTimeout(boot, 600);
+    } else {
+        setTimeout(()=>{
+            document.getElementById("boot").style.display = "none";
+        },1000);
+    }
+}
+boot();
+
+/* =======================
+   SCROLL ANIMATION
+======================= */
+const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+        if(e.isIntersecting){
+            e.target.classList.add("visible");
+        }
+    });
+});
+document.querySelectorAll(".fade-in").forEach(el=>{
+    observer.observe(el);
+});
+
+/* =======================
+   EASTER EGG 😏
+======================= */
+let keys = [];
+window.addEventListener("keydown", e=>{
+    keys.push(e.key);
+    if(keys.join("").includes("space")){
+        alert("🚀 SECRET UNLOCKED");
+        keys = [];
+    }
+});
+</script>
+
 </body>
 </html>
