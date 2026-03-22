@@ -224,3 +224,164 @@ window.addEventListener("resize", ()=>{
 
 </body>
 </html>
+
+
+
+
+<script>
+
+/* =====================
+   ULTRA REAL TEXTURES
+===================== */
+const texLoader = new THREE.TextureLoader();
+
+const textures = {
+    sun: texLoader.load("https://threejs.org/examples/textures/planets/sun.jpg"),
+    earth: texLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"),
+    earthNight: texLoader.load("https://threejs.org/examples/textures/planets/earth_lights_2048.png"),
+    mars: texLoader.load("https://threejs.org/examples/textures/planets/mars_1024.jpg"),
+    jupiter: texLoader.load("https://threejs.org/examples/textures/planets/jupiter.jpg"),
+    saturn: texLoader.load("https://threejs.org/examples/textures/planets/saturn.jpg")
+};
+
+/* =====================
+   APPLY TEXTURES
+===================== */
+planets.forEach(p=>{
+    if(p.userData.name === "Erde"){
+        p.material.map = textures.earth;
+
+        // City Lights Layer
+        const night = new THREE.Mesh(
+            new THREE.SphereGeometry(p.userData.size+0.01,64,64),
+            new THREE.MeshBasicMaterial({
+                map: textures.earthNight,
+                transparent:true,
+                opacity:0.6
+            })
+        );
+        night.position.copy(p.position);
+        scene.add(night);
+    }
+
+    if(p.userData.name === "Mars"){
+        p.material.map = textures.mars;
+    }
+
+    if(p.userData.name === "Jupiter"){
+        p.material.map = textures.jupiter;
+    }
+
+    if(p.userData.name === "Saturn"){
+        p.material.map = textures.saturn;
+    }
+
+    if(p.userData.name === "Sonne"){
+        p.material.map = textures.sun;
+    }
+
+    p.material.needsUpdate = true;
+});
+
+/* =====================
+   MISSION SYSTEM
+===================== */
+let mission = {
+    target: "Mars",
+    completed:false
+};
+
+function checkMission(){
+    if(currentPlanet && currentPlanet.userData.name === mission.target && !mission.completed){
+        mission.completed = true;
+        document.getElementById("info").innerText = "MISSION ERFOLGREICH: Mars erreicht 🚀";
+    }
+}
+
+/* =====================
+   ASTRONAUT (ON LAND)
+===================== */
+const astronaut = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5,1,0.5),
+    new THREE.MeshBasicMaterial({color:0xffffff})
+);
+scene.add(astronaut);
+astronaut.visible = false;
+
+/* =====================
+   LASER / MINING
+===================== */
+const laserMat = new THREE.LineBasicMaterial({color:0x00ffff});
+
+function shootLaser(){
+    const points = [];
+    points.push(camera.position.clone());
+    points.push(new THREE.Vector3(
+        camera.position.x,
+        camera.position.y,
+        camera.position.z - 10
+    ));
+
+    const geo = new THREE.BufferGeometry().setFromPoints(points);
+    const laser = new THREE.Line(geo, laserMat);
+
+    scene.add(laser);
+
+    setTimeout(()=>scene.remove(laser), 100);
+}
+
+window.addEventListener("click", ()=>{
+    if(landed){
+        shootLaser();
+    }
+});
+
+/* =====================
+   VIEW MODES (COCKPIT)
+===================== */
+let cockpit = false;
+
+window.addEventListener("keydown", e=>{
+    if(e.key.toLowerCase() === "c"){
+        cockpit = !cockpit;
+
+        if(cockpit){
+            camera.position.set(rocket.position.x, rocket.position.y+1, rocket.position.z);
+            document.getElementById("info").innerText = "Cockpit Ansicht aktiviert";
+        } else {
+            camera.position.z += 10;
+            document.getElementById("info").innerText = "Außenansicht";
+        }
+    }
+});
+
+/* =====================
+   UPDATE LOOP ADDONS
+===================== */
+const oldAnimate = animate;
+
+animate = function(){
+    requestAnimationFrame(animate);
+
+    if(!landed){
+        move();
+        checkLanding();
+    } else {
+        surfaceMove();
+
+        astronaut.visible = true;
+        astronaut.position.copy(camera.position);
+    }
+
+    checkMission();
+
+    planets.forEach(p=>p.rotation.y+=0.003);
+
+    issAngle += 0.01;
+    iss.position.x = Math.cos(issAngle)*45;
+    iss.position.z = Math.sin(issAngle)*45;
+
+    renderer.render(scene,camera);
+};
+
+</script>
